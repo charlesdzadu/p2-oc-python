@@ -1,5 +1,7 @@
 
     
+import csv
+import sys
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import requests
@@ -52,3 +54,46 @@ def scrape_single_category(url: str, file_path: str = None):
     
     return True
     
+    
+if __name__ == "__main__":
+    """Main function"""
+    
+    args = sys.argv[1:]
+    if not args:
+        single_category_url = "https://books.toscrape.com/catalogue/category/books/young-adult_21/index.html"
+        csv_file_path = "assets/single_category_data.csv"
+    else:
+        if len(args) == 1:
+            single_category_url = args[0]
+            csv_file_path = "assets/single_category_data.csv"
+        elif len(args) == 2:
+            single_category_url = args[0]
+            csv_file_path = args[1]
+        else:
+            print("Please provide 1 or 2 arguments: Category url and a csv file path")
+            sys.exit(1)
+            
+            
+    headers = [
+        "product_page_url", 
+        "universal_product_code", 
+        "title",
+        "price_including_tax", 
+        "price_excluding_tax", 
+        "number_available", 
+        "product_description", 
+        "category", 
+        "review_rating", 
+        "image_url"
+    ]
+    
+    print("Scraping Single Category \n")
+    
+    with open(csv_file_path, "w", encoding='utf-8', newline='') as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+        writer.writerow(headers)
+    
+    scrape_single_category(single_category_url, csv_file_path)
+    
+    
+    print("Scraping Single Category End \n")
